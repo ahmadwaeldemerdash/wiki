@@ -3,6 +3,8 @@ from markdown2 import Markdown
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+
+
 from . import util
 
 
@@ -31,3 +33,17 @@ def entry_func(request, title):
     content = markdowner.convert(entry)
 
     return render(request, "encyclopedia/entry.html",{"title": title, "content": content})
+
+def create(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        content = request.POST.get("content")
+        if util.get_entry(title) != None:
+            return render(request, "encyclopedia/duplicate.html")
+       
+        util.save_entry(title, content)
+        markdowner = Markdown()
+        content = markdowner.convert(content)
+        return render(request, "encyclopedia/template.html", {"title": title, "content":content})
+
+    return render(request, "encyclopedia/create.html")
