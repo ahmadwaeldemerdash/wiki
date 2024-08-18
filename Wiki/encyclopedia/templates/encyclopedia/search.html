@@ -1,0 +1,17 @@
+{% extends "encyclopedia/layout.html" %}
+{% block title %}
+    Search
+{% endblock %}
+
+{% block body %}
+    <h1>Search</h1>
+    <ul>
+    {% if token == 2 %}
+    {% for entry in entries %}
+        <li><a href="{% url 'entry' title=entry %}">{{ entry }}</li>
+    {% endfor %}
+    {% else %}
+    <li><a href="{% url 'entry' title=entries %}">{{ entries }}</li>
+    {% endif %}
+
+{% endblock %}
