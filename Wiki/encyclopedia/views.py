@@ -3,8 +3,6 @@ from markdown2 import Markdown
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-
-
 from . import util
 
 
@@ -44,6 +42,20 @@ def create(request):
         util.save_entry(title, content)
         markdowner = Markdown()
         content = markdowner.convert(content)
-        return render(request, "encyclopedia/template.html", {"title": title, "content":content})
+        return render(request, "encyclopedia/entry.html", {"title": title, "content":content})
 
     return render(request, "encyclopedia/create.html")
+
+def edit(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        content = util.get_entry(title)
+        return render(request, "encyclopedia/edit.html", {"title": title, "content":content})
+def save_entry(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        content = request.POST.get("content")
+        util.save_entry(title, content)
+        url = reverse("entry", args=[title])
+        return HttpResponseRedirect(url)
+
